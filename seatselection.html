@@ -1,0 +1,878 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MakeAway | Seat Selection Page</title>
+
+    <style>
+        :root{
+            --brand:#7c4dff;
+            --brand-dark:#6730ff;
+            --ink:#2b2240;
+            --muted:#62507d;
+            --line:#eadcff;
+            --surface:#ffffff;
+            --page:#f8f4ff;
+        }
+
+        *{
+            margin:0;
+            padding:0;
+            box-sizing:border-box;
+            font-family:Arial,sans-serif;
+        }
+
+        body{
+            background:var(--page);
+            color:var(--ink);
+            padding:15px;
+        }
+
+        .bus-container{
+            max-width:1100px;
+            margin:auto;
+        }
+
+        h2{
+            color:#4b2e83;
+            margin-bottom:12px;
+            font-size:20px;
+        }
+
+        .back-btn{
+            display:inline-block;
+            margin-bottom:15px;
+            padding:9px 14px;
+            background:white;
+            color:var(--brand);
+            border:1px solid var(--brand);
+            border-radius:6px;
+            text-decoration:none;
+            font-size:14px;
+            font-weight:bold;
+        }
+
+        .back-btn:hover{
+            background:var(--brand);
+            color:white;
+        }
+
+        .gender-box{
+            background:var(--surface);
+            padding:15px;
+            margin-bottom:20px;
+            border-radius:10px;
+            box-shadow:0 4px 12px rgba(124,77,255,.08);
+        }
+
+        .gender-box strong{
+            margin-right:20px;
+        }
+
+        .gender-box label{
+            margin-right:25px;
+            cursor:pointer;
+            font-weight:bold;
+        }
+
+        .decks-wrapper{
+            display:flex;
+            gap:15px;
+            flex-wrap:wrap;
+        }
+
+        .deck-box{
+            flex:1 1 45%;
+            min-width:300px;
+        }
+
+        .deck-title{
+            background:var(--brand);
+            color:white;
+            padding:8px 12px;
+            border-radius:6px;
+            margin-bottom:10px;
+            font-size:16px;
+            font-weight:bold;
+            text-align:center;
+        }
+
+        .seat-layout{
+            background:var(--surface);
+            border:1px solid #eadcff;
+            border-radius:10px;
+            padding:12px;
+            box-shadow:0 4px 12px rgba(124,77,255,.08);
+        }
+
+        .seat-row{
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            margin-bottom:10px;
+            gap:6px;
+        }
+
+        .seat{
+            width:50px;
+            height:55px;
+            border:2px solid #22c55e;
+            border-radius:6px;
+            display:flex;
+            flex-direction:column;
+            align-items:center;
+            justify-content:center;
+            font-size:11px;
+            font-weight:bold;
+            cursor:pointer;
+            user-select:none;
+            position:relative;
+        }
+
+        .seat-no{
+            font-size:11px;
+            margin-bottom:1px;
+        }
+
+        .seat-price{
+            font-size:9px;
+            color:#555;
+        }
+
+        .seat.available{
+            border-color:#22c55e;
+            background:#f0fff4;
+        }
+
+        .seat.booked{
+            border:2px dashed #999;
+            background:#f5f5f5;
+            cursor:not-allowed;
+            opacity:.8;
+        }
+
+        .seat.booked-female{
+            border:2px dashed #ec4899;
+            background:#fce7f3;
+            cursor:not-allowed;
+        }
+
+        .seat.selected{
+            background:#ede9fe;
+            border:3px solid var(--brand);
+        }
+
+        .aisle{
+            width:30px;
+        }
+
+        .legend-title{
+            color:#4b2e83;
+            margin:20px 0 10px;
+            font-size:16px;
+            font-weight:bold;
+        }
+
+        .legend{
+            display:grid;
+            grid-template-columns:repeat(2,1fr);
+            gap:8px;
+            background:var(--surface);
+            border:1px solid var(--line);
+            border-radius:10px;
+            padding:12px;
+            box-shadow:0 4px 12px rgba(124,77,255,.08);
+            font-size:12px;
+        }
+
+        .legend-item{
+            display:flex;
+            align-items:center;
+            gap:6px;
+            color:var(--muted);
+        }
+
+        .legend-box{
+            width:20px;
+            height:24px;
+            border-radius:3px;
+        }
+
+        .legend-box.available{
+            border:2px solid #22c55e;
+            background:#f0fff4;
+        }
+
+        .legend-box.booked{
+            border:2px dashed #999;
+            background:#f5f5f5;
+        }
+
+        .legend-box.booked-female{
+            border:2px dashed #ec4899;
+            background:#fce7f3;
+        }
+
+        .legend-box.selected{
+            border:3px solid var(--brand);
+            background:#ede9fe;
+        }
+
+        .summary-box{
+            margin-top:25px;
+            background:var(--surface);
+            border:1px solid var(--line);
+            border-radius:10px;
+            padding:18px;
+            box-shadow:0 4px 12px rgba(124,77,255,.08);
+        }
+
+        .summary-box h3{
+            color:#4b2e83;
+            margin-bottom:12px;
+        }
+
+        .stop-box{
+            position:relative;
+            display:grid;
+            grid-template-columns:1fr 1fr;
+            gap:16px;
+            margin:20px 0 4px;
+            padding:22px 16px 16px;
+            border:1px solid #ded2f5;
+            border-radius:12px;
+            background:linear-gradient(135deg,#fbfaff,#f4efff);
+        }
+
+        .stop-box::before{
+            content:"Journey points";
+            position:absolute;
+            top:-11px;
+            left:14px;
+            padding:3px 10px;
+            border:1px solid #ded2f5;
+            border-radius:999px;
+            background:#fff;
+            color:#6b42bf;
+            font-size:12px;
+            font-weight:bold;
+            letter-spacing:.2px;
+        }
+
+        .stop-box label{
+            display:grid;
+            gap:7px;
+            color:var(--muted);
+            font-weight:bold;
+            font-size:14px;
+        }
+
+        .stop-box label::before{
+            display:block;
+            color:#7c4dff;
+            font-size:11px;
+            font-weight:normal;
+            letter-spacing:.4px;
+            text-transform:uppercase;
+        }
+
+        .stop-box label:first-child::before{content:"Start your journey"}
+        .stop-box label:last-child::before{content:"End your journey"}
+
+        .stop-box select{
+            width:100%;
+            padding:12px 13px;
+            border:1px solid #cfc6df;
+            border-radius:8px;
+            color:var(--ink);
+            background:white;
+            font-size:14px;
+            cursor:pointer;
+            transition:border-color .2s,box-shadow .2s;
+        }
+
+        .stop-box select:focus{
+            outline:none;
+            border-color:var(--brand);
+            box-shadow:0 0 0 3px rgba(124,77,255,.14);
+        }
+
+        #selectedSeatList{
+            color:var(--muted);
+            margin:10px 0;
+            min-height:20px;
+        }
+
+        #totalFare{
+            color:#4b2e83;
+            font-weight:bold;
+            font-size:18px;
+        }
+
+        .payment-btn{
+            margin-top:18px;
+            width:100%;
+            padding:14px;
+            border:none;
+            border-radius:8px;
+            background:var(--brand);
+            color:white;
+            font-size:16px;
+            font-weight:bold;
+            cursor:pointer;
+        }
+
+        .payment-btn:hover{
+            background:var(--brand-dark);
+        }
+
+        .payment-btn:disabled{
+            background:#b7a8db;
+            cursor:not-allowed;
+        }
+
+        @media(max-width:800px){
+            body{padding:16px}
+            .decks-wrapper{
+                flex-direction:column;
+            }
+
+            .deck-box{
+                flex:1 1 100%;
+            }
+
+            .legend{
+                grid-template-columns:1fr;
+            }
+
+            .gender-box strong{
+                display:block;
+                margin-bottom:12px;
+            }
+
+            .stop-box{grid-template-columns:1fr}
+        }
+    </style>
+    <script src="language.js" defer></script>
+</head>
+
+<body>
+
+<div class="bus-container">
+    <h2>Seat Selection (Sleeper Bus)</h2>
+    <a href="searchresults.html" class="back-btn">
+        ← Back to Search Results
+    </a>
+
+    <div class="gender-box">
+        <strong>Select Passenger Gender:</strong>
+
+        <label>
+            <input type="radio" name="gender" value="male">
+            Male
+        </label>
+
+        <label>
+            <input type="radio" name="gender" value="female">
+            Female
+        </label>
+    </div>
+
+    <div class="decks-wrapper">
+
+        <div class="deck-box">
+            <div class="deck-title">Lower Deck</div>
+            <div class="seat-layout" id="lowerDeck"></div>
+        </div>
+
+        <div class="deck-box">
+            <div class="deck-title">Upper Deck</div>
+            <div class="seat-layout" id="upperDeck"></div>
+        </div>
+
+    </div>
+
+    <div class="legend-title">Seat Legend</div>
+
+    <div class="legend">
+
+        <div class="legend-item">
+            <div class="legend-box available"></div>
+            Available
+        </div>
+
+        <div class="legend-item">
+            <div class="legend-box booked"></div>
+            Already Booked
+        </div>
+
+        <div class="legend-item">
+            <div class="legend-box booked-female"></div>
+            Booked by Female
+        </div>
+
+        <div class="legend-item">
+            <div class="legend-box selected"></div>
+            Selected Seat
+        </div>
+
+    </div>
+
+    <div class="summary-box">
+        <h3>Booking Summary</h3>
+        <p><strong>Selected Seats:</strong></p>
+        <p id="selectedSeatList">None</p>
+        <p id="totalFare">Total Fare : ₹0</p>
+        <p id="seatError" role="status"></p>
+        <div class="stop-box">
+            <label for="boardingPoint">Boarding point
+                <select id="boardingPoint" disabled>
+                    <option value="">Select boarding point</option>
+                </select>
+            </label>
+            <label for="dropPoint">Drop point
+                <select id="dropPoint" disabled>
+                    <option value="">Select drop point</option>
+                </select>
+            </label>
+        </div>
+        <button id="paymentBtn" class="payment-btn" type="button" disabled>
+            Continue to Passenger Details
+        </button>
+
+    </div>
+
+</div>
+
+<script src="api.js"></script>
+<script>
+    const params = new URLSearchParams(location.search);
+    const busId = params.get("bus_id");
+    const journeyDate = params.get("journey_date");
+    let bus = null;
+    const seatTypes = {};
+    const seatFares = {};
+    const selectedSeats = [];
+    const boardingPointSelect = document.getElementById("boardingPoint");
+    const dropPointSelect = document.getElementById("dropPoint");
+    let selection = null;
+
+    try {
+        selection = JSON.parse(sessionStorage.getItem("easybookSelection") || "null");
+    } catch {
+        selection = null;
+    }
+
+    let passengerGender = "";
+    let firstGenderSelection = true;
+    let seatsLoading = false;
+
+    const cityStopPoints = {
+        "bengaluru": ["Kempegowda Bus Station (Majestic)", "Anand Rao Circle", "Madiwala", "Silk Board", "Hebbal", "Yeshwanthpur", "KR Puram"],
+        "mysuru": ["Suburban Bus Stand", "Mysuru City Bus Stand", "Columbia Asia Hospital", "Nazarbad Bus Stand"],
+        "chennai": ["Koyambedu Omni Bus Stand", "Tambaram", "Guindy", "Perungalathur", "Madhavaram Bus Terminus"],
+        "hyderabad": ["MGBS (Mahatma Gandhi Bus Station)", "JBS (Jubilee Bus Station)", "Ameerpet", "LB Nagar", "Miyapur"],
+        "mumbai": ["Dadar East", "Borivali (West)", "Thane", "Vashi", "Mumbai Central"],
+        "delhi": ["Kashmere Gate ISBT", "Anand Vihar ISBT", "Sarai Kale Khan ISBT", "Dhaula Kuan", "Rohini"],
+        "kolara": ["Kolar KSRTC Bus Stand", "Bangarpet Bus Stand", "Malur Bus Stand"],
+        "kundapura": ["Kundapura KSRTC Bus Stand", "Kundapura Railway Station", "Trasi Junction"],
+        "dharwada": ["Dharwad CBT", "Jubilee Circle", "Sattur", "Dharwad Railway Station"],
+        "hubli": ["Hubballi CBT", "Gokul Road", "Unkal Cross", "Hubballi Railway Station"],
+        "ballari": ["Ballari KSRTC Bus Stand", "Royal Circle", "Cowl Bazaar", "Ballari Railway Station"],
+        "shivmoga": ["Shivamogga KSRTC Bus Stand", "Vinobanagar", "Sagara Road", "Shivamogga Railway Station"],
+        "chikka ballapura": ["Chikkaballapur KSRTC Bus Stand", "Nandi Cross", "Bagepalli Circle"],
+        "honnavara": ["Honnavar Bus Stand", "Honnavar Railway Station", "NH66 Bypass"],
+        "belagavi": ["Belagavi Central Bus Stand", "Rani Channamma Circle", "Congress Road", "Belagavi Railway Station"],
+        "maluru": ["Malur KSRTC Bus Stand", "Malur Railway Station", "Lakkur Cross"],
+        "mangaluru": ["Statebank Bus Stand", "Bejai Bus Stand", "Kankanady", "Pumpwell Circle", "Surathkal"],
+        "davangere": ["Davangere KSRTC Bus Stand", "PB Road", "Harihar Bus Stand", "Davangere Railway Station"],
+        "haliyala": ["Haliyal Bus Stand", "Dandeli Road Junction", "Mundgod Bus Stand"]
+    };
+
+    function getCityStopPoints(city) {
+        return cityStopPoints[city.trim().toLowerCase()] || [
+            `${city} Bus Stand`,
+            `${city} City Centre`,
+            `${city} Highway Pickup Point`
+        ];
+    }
+
+    function populateStopOptions() {
+        const options = getCityStopPoints(bus.source);
+        const dropOptions = getCityStopPoints(bus.destination);
+        boardingPointSelect.replaceChildren(new Option("Select boarding point", ""), ...options.map(point => new Option(point, point)));
+        dropPointSelect.replaceChildren(new Option("Select drop point", ""), ...dropOptions.map(point => new Option(point, point)));
+        boardingPointSelect.disabled = false;
+        dropPointSelect.disabled = false;
+        if (selection?.boardingPoint) boardingPointSelect.value = selection.boardingPoint;
+        if (selection?.dropPoint) dropPointSelect.value = selection.dropPoint;
+    }
+
+    document.querySelectorAll("input[name='gender']").forEach(function(radio){
+
+        radio.addEventListener("change", function(){
+
+            passengerGender = this.value;
+
+            if(firstGenderSelection){
+                firstGenderSelection = false;
+                return;
+            }
+
+            if(selectedSeats.length > 0){
+                clearSelectedSeats();
+            }
+        });
+
+    });
+
+    function createSeat(seatNo, seatFare){
+
+        const seat = document.createElement("div");
+
+        seat.className = "seat";
+        seat.dataset.seat = seatNo;
+
+        const seatNoDiv = document.createElement("div");
+        seatNoDiv.className = "seat-no";
+        seatNoDiv.textContent = seatNo;
+
+        const seatPriceDiv = document.createElement("div");
+        seatPriceDiv.className = "seat-price";
+        seatPriceDiv.textContent = "₹" + seatFare;
+
+        seat.appendChild(seatNoDiv);
+        seat.appendChild(seatPriceDiv);
+
+        const type = seatTypes[seatNo];
+
+        if(type === "available"){
+
+            seat.classList.add("available");
+
+            seat.addEventListener("click", function(){
+                toggleSeat(seat, seatNo, seatFare);
+            });
+
+        }else if(type === "booked"){
+
+            seat.classList.add("booked");
+
+        }else if(type === "booked-female"){
+
+            seat.classList.add("booked-female");
+
+        }else{
+
+            seat.classList.add("available");
+
+            seat.addEventListener("click", function(){
+                toggleSeat(seat, seatNo, seatFare);
+            });
+        }
+
+        return seat;
+    }
+
+    function isAdjacentToBookedFemale(seatNo){
+
+        if(!seatNo.includes("A") && !seatNo.includes("B")){
+            return false;
+        }
+
+        let adjacentSeat;
+
+        if(seatNo.endsWith("A")){
+            adjacentSeat = seatNo.slice(0, -1) + "B";
+        }else{
+            adjacentSeat = seatNo.slice(0, -1) + "A";
+        }
+
+        return seatTypes[adjacentSeat] === "booked-female";
+    }
+
+    function getIncompleteDoubleSeat() {
+        const selectedSeatNumbers = new Set(selectedSeats.map(function(item){
+            return item.seat;
+        }));
+        return selectedSeats.find(function(item){
+            if(!/D\d+[AB]$/.test(item.seat)) return false;
+            const adjacentSeat = item.seat.endsWith("A")
+                ? item.seat.slice(0, -1) + "B"
+                : item.seat.slice(0, -1) + "A";
+            return !selectedSeatNumbers.has(adjacentSeat);
+        });
+    }
+
+    function showDoubleSeatMessage() {
+        const incompleteSeat = getIncompleteDoubleSeat();
+        if(!incompleteSeat) return false;
+        const pair = incompleteSeat.seat.slice(0, -1);
+        alert(
+            "A single passenger cannot book only one side of a double seat.\n" +
+            "Please select both " + pair + "A and " + pair + "B seats."
+        );
+        return true;
+    }
+
+    function toggleSeat(seatEl, seatNo, seatFare){
+
+        if(seatTypes[seatNo] !== "available") return;
+
+        const selectedGender =
+            document.querySelector("input[name='gender']:checked");
+
+        if(!selectedGender){
+            alert("Please select passenger gender first.");
+            return;
+        }
+
+        passengerGender = selectedGender.value;
+
+        if(
+            passengerGender === "male" &&
+            isAdjacentToBookedFemale(seatNo)
+        ){
+            alert(
+                "This seat is unavailable because the adjacent seat is booked by a female passenger."
+            );
+            return;
+        }
+
+        if(seatEl.classList.contains("selected")){
+
+            seatEl.classList.remove("selected");
+
+            const index = selectedSeats.findIndex(function(item){
+                return item.seat === seatNo;
+            });
+
+            if(index !== -1){
+                selectedSeats.splice(index, 1);
+            }
+
+        }else{
+
+            if(selectedSeats.length >= 6){
+                alert("You can select a maximum of 6 seats.");
+                return;
+            }
+
+            seatEl.classList.add("selected");
+
+            selectedSeats.push({
+                seat:seatNo,
+                fare:seatFare
+            });
+
+            showDoubleSeatMessage();
+        }
+
+        updateBookingSummary();
+    }
+
+    function updateBookingSummary(){
+
+        const seatList =
+            document.getElementById("selectedSeatList");
+
+        const totalFare =
+            document.getElementById("totalFare");
+
+        const paymentBtn =
+            document.getElementById("paymentBtn");
+
+        if(selectedSeats.length === 0){
+
+            seatList.textContent = "None";
+            totalFare.textContent = "Total Fare : ₹0";
+            paymentBtn.disabled = true;
+            return;
+        }
+
+        seatList.textContent =
+            selectedSeats.map(function(item){
+                return item.seat;
+            }).join(", ");
+
+        const total =
+            selectedSeats.reduce(function(sum, item){
+                return sum + item.fare;
+            }, 0);
+
+        totalFare.textContent = "Total Fare : ₹" + total;
+        paymentBtn.disabled = false;
+    }
+
+    function clearSelectedSeats(){
+
+        document
+            .querySelectorAll(".seat.selected")
+            .forEach(function(seat){
+                seat.classList.remove("selected");
+            });
+
+        selectedSeats.length = 0;
+
+        updateBookingSummary();
+
+        alert(
+            "Passenger gender changed.\nPlease select your seats again."
+        );
+    }
+
+    document
+        .getElementById("paymentBtn")
+        .addEventListener("click", function(){
+
+            if(selectedSeats.length === 0){
+                alert("Please select at least one seat.");
+                return;
+            }
+
+            if(!passengerGender){
+                alert("Please select passenger gender.");
+                return;
+            }
+
+            if(!boardingPointSelect.value || !dropPointSelect.value){
+                alert("Please select your boarding point and drop point.");
+                return;
+            }
+
+            if(showDoubleSeatMessage()) return;
+
+            sessionStorage.setItem("easybookSelection", JSON.stringify({
+                busId,
+                journeyDate,
+                seats: selectedSeats.map(item => item.seat),
+                gender: passengerGender,
+                boardingPoint: boardingPointSelect.value,
+                dropPoint: dropPointSelect.value
+            }));
+            location.href = "passengerdetails.html";
+        });
+
+    function generateDeck(containerId, prefix, rows){
+
+        const container =
+            document.getElementById(containerId);
+
+        let singleIndex = 1;
+        let doubleIndex = 1;
+
+        for(let row = 0; row < rows; row++){
+
+            const rowDiv = document.createElement("div");
+            rowDiv.className = "seat-row";
+
+            const singleSeatNo =
+                prefix + "S" + singleIndex;
+
+            rowDiv.appendChild(
+                createSeat(singleSeatNo, seatFares[singleSeatNo])
+            );
+
+            singleIndex++;
+
+            const aisle = document.createElement("div");
+            aisle.className = "aisle";
+            rowDiv.appendChild(aisle);
+
+            const doubleSeatNoA =
+                prefix + "D" + doubleIndex + "A";
+
+            const doubleSeatNoB =
+                prefix + "D" + doubleIndex + "B";
+
+            rowDiv.appendChild(
+                createSeat(doubleSeatNoA, seatFares[doubleSeatNoA])
+            );
+
+            rowDiv.appendChild(
+                createSeat(doubleSeatNoB, seatFares[doubleSeatNoB])
+            );
+
+            doubleIndex++;
+
+            container.appendChild(rowDiv);
+        }
+    }
+
+    async function loadSeats() {
+        if (!busId || !journeyDate || !EasyBook.requireLogin()) return;
+        if (seatsLoading) return;
+        seatsLoading = true;
+        try {
+            const result = await EasyBook.request(`/seats?busId=${encodeURIComponent(busId)}&date=${encodeURIComponent(journeyDate)}`);
+            bus = result.bus;
+            populateStopOptions();
+            result.seats.forEach(seat => {
+                seatTypes[seat.number] = seat.booked ? (seat.gender === "female" ? "booked-female" : "booked") : "available";
+                seatFares[seat.number] = seat.fare;
+            });
+            const renderedSeats = document.querySelectorAll(".seat");
+            if (renderedSeats.length) {
+                let selectionChanged = false;
+                renderedSeats.forEach(seatElement => {
+                    const seatNo = seatElement.dataset.seat;
+                    const type = seatTypes[seatNo] || "available";
+                    const selected = seatElement.classList.contains("selected");
+                    seatElement.classList.remove("available", "booked", "booked-female");
+                    seatElement.classList.add(type);
+                    if (selected && (type !== "available" || (passengerGender === "male" && isAdjacentToBookedFemale(seatNo)))) {
+                        seatElement.classList.remove("selected");
+                        const selectedIndex = selectedSeats.findIndex(item => item.seat === seatNo);
+                        if (selectedIndex !== -1) selectedSeats.splice(selectedIndex, 1);
+                        selectionChanged = true;
+                    }
+                });
+                if (selectionChanged) updateBookingSummary();
+            } else {
+                generateDeck("lowerDeck", "L", 6);
+                generateDeck("upperDeck", "U", 6);
+                restoreSavedSelection();
+            }
+        } catch (error) {
+            document.getElementById("seatError").textContent = error.message;
+        } finally {
+            seatsLoading = false;
+        }
+    }
+
+    function restoreSavedSelection() {
+        let savedSelection;
+        try {
+            savedSelection = JSON.parse(sessionStorage.getItem("easybookSelection") || "null");
+        } catch {
+            return;
+        }
+        if (!savedSelection || savedSelection.busId !== busId || savedSelection.journeyDate !== journeyDate) return;
+
+        const genderInput = document.querySelector(`input[name="gender"][value="${savedSelection.gender}"]`);
+        if (!genderInput) return;
+        genderInput.checked = true;
+        passengerGender = savedSelection.gender;
+        firstGenderSelection = false;
+
+        savedSelection.seats.forEach(seatNo => {
+            const seat = Array.from(document.querySelectorAll(".seat")).find(item => item.dataset.seat === seatNo);
+            if (!seat || seatTypes[seatNo] !== "available" || (passengerGender === "male" && isAdjacentToBookedFemale(seatNo))) return;
+            seat.classList.add("selected");
+            selectedSeats.push({ seat: seatNo, fare });
+        });
+        updateBookingSummary();
+    }
+
+    loadSeats();
+    window.setInterval(() => {
+        if (!document.hidden) loadSeats();
+    }, 15000);
+    document.addEventListener("visibilitychange", () => {
+        if (!document.hidden) loadSeats();
+    });
+</script>
+
+</body>
+</html>

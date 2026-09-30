@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MakeAway | Ticket</title>
+
+    <style>
+        *{
+            margin:0;
+            padding:0;
+            box-sizing:border-box;
+            font-family:Arial,sans-serif;
+        }
+
+        body{
+            background:#f8f4ff;
+            color:#2b2240;
+            padding:20px;
+        }
+
+        .ticket-container{
+            max-width:700px;
+            margin:auto;
+        }
+
+        .ticket{
+            background:white;
+            border:2px solid #7c4dff;
+            border-radius:12px;
+            overflow:hidden;
+            box-shadow:0 5px 18px rgba(124,77,255,.18);
+        }
+
+        .ticket-header{
+            background:#7c4dff;
+            color:white;
+            text-align:center;
+            padding:20px;
+        }
+
+        .ticket-header h1{
+            font-size:28px;
+            margin-bottom:6px;
+        }
+
+        .ticket-header p{
+            font-size:14px;
+        }
+
+        .success-message{
+            text-align:center;
+            color:#16a34a;
+            font-size:19px;
+            font-weight:bold;
+            padding:20px 10px 8px;
+        }
+
+        .ticket-body{
+            padding:20px;
+        }
+
+        .ticket-row{
+            display:flex;
+            justify-content:space-between;
+            gap:20px;
+            padding:12px 0;
+            border-bottom:1px solid #eadcff;
+            font-size:15px;
+        }
+
+        .ticket-label{
+            color:#62507d;
+            font-weight:bold;
+        }
+
+        .ticket-value{
+            color:#2b2240;
+            text-align:right;
+            word-break:break-word;
+        }
+
+        .total-row{
+            color:#4b2e83;
+            font-size:19px;
+            font-weight:bold;
+        }
+
+        .ticket-footer{
+            background:#f3efff;
+            padding:16px;
+            text-align:center;
+            color:#62507d;
+            font-size:13px;
+        }
+
+        .button-group{
+            display:flex;
+            gap:10px;
+            margin-top:20px;
+        }
+
+        .action-btn{
+            flex:1;
+            padding:12px;
+            border-radius:7px;
+            text-align:center;
+            text-decoration:none;
+            font-size:14px;
+            font-weight:bold;
+            cursor:pointer;
+        }
+
+        .print-btn{
+            border:none;
+            background:#7c4dff;
+            color:white;
+        }
+
+        .print-btn:hover{
+            background:#6730ff;
+        }
+
+        .home-btn{
+            background:white;
+            color:#7c4dff;
+            border:1px solid #7c4dff;
+        }
+
+        .home-btn:hover{
+            background:#f3efff;
+        }
+
+        @media(max-width:600px){
+
+            body{
+                padding:10px;
+            }
+
+            .ticket-body{
+                padding:14px;
+            }
+
+            .ticket-row{
+                font-size:13px;
+            }
+
+            .button-group{
+                flex-direction:column;
+            }
+        }
+
+        @media print{
+
+            body{
+                background:white;
+                padding:0;
+            }
+
+            .ticket-container{
+                max-width:100%;
+            }
+
+            .ticket{
+                box-shadow:none;
+            }
+
+            .button-group{
+                display:none;
+            }
+        }
+    </style>
+    <script src="language.js" defer></script>
+</head>
+
+<body>
+
+<div class="ticket-container">
+
+    <div class="ticket">
+
+        <div class="ticket-header">
+            <h1>MakeAway</h1>
+            <p>Sleeper Bus Ticket</p>
+        </div>
+
+        <div class="success-message">
+            Booking Confirmed
+        </div>
+
+        <div class="ticket-body">
+
+            <div class="ticket-row">
+                <span class="ticket-label">Booking ID</span>
+                <span class="ticket-value" id="bookingId">-</span>
+            </div>
+
+            <div class="ticket-row">
+                <span class="ticket-label">Passenger Names</span>
+                <span class="ticket-value" id="passengerName">-</span>
+            </div>
+
+            <div class="ticket-row">
+                <span class="ticket-label">Passenger Ages</span>
+                <span class="ticket-value" id="passengerAge">-</span>
+            </div>
+
+            <div class="ticket-row">
+                <span class="ticket-label">Gender</span>
+                <span class="ticket-value" id="passengerGender">-</span>
+            </div>
+
+            <div class="ticket-row">
+                <span class="ticket-label">Passenger Phone Numbers</span>
+                <span class="ticket-value" id="passengerPhone">-</span>
+            </div>
+
+            <div class="ticket-row">
+                <span class="ticket-label">Email Address</span>
+                <span class="ticket-value" id="passengerEmail">-</span>
+            </div>
+
+            <div class="ticket-row">
+                <span class="ticket-label">Selected Seats</span>
+                <span class="ticket-value" id="selectedSeats">-</span>
+            </div>
+
+            <div class="ticket-row">
+                <span class="ticket-label">Boarding Point</span>
+                <span class="ticket-value" id="boardingPoint">-</span>
+            </div>
+
+            <div class="ticket-row">
+                <span class="ticket-label">Drop Point</span>
+                <span class="ticket-value" id="dropPoint">-</span>
+            </div>
+
+            <div class="ticket-row total-row">
+                <span>Total Fare</span>
+                <span>₹<span id="totalFare">0</span></span>
+            </div>
+
+            <div class="ticket-row">
+                <span class="ticket-label">Booking Date</span>
+                <span class="ticket-value" id="bookingDate">-</span>
+            </div>
+
+        </div>
+
+        <div class="ticket-footer">
+            Please carry a valid ID proof while travelling.
+        </div>
+
+    </div>
+
+    <div class="button-group">
+
+        <button
+            class="action-btn print-btn"
+            onclick="window.print()">
+            Print Ticket
+        </button>
+
+        <a
+            href="home.html"
+            class="action-btn home-btn">
+            Back to Search
+        </a>
+
+    </div>
+
+</div>
+
+<script src="api.js"></script>
+<script>
+    const bookingId = new URLSearchParams(location.search).get("booking_id");
+    async function loadTicket() {
+        if (!bookingId || !EasyBook.requireLogin()) return;
+        try {
+            const result = await EasyBook.request(`/bookings/${encodeURIComponent(bookingId)}`);
+            const booking = result.booking;
+            if (booking.status !== "confirmed") throw new Error("This booking has not been paid.");
+            document.getElementById("bookingId").textContent = booking.id;
+            const passengers = booking.passengers?.length ? booking.passengers : [booking.passenger];
+            document.getElementById("passengerName").textContent = passengers.map(passenger => passenger.name).join(", ");
+            document.getElementById("passengerAge").textContent = passengers.map(passenger => passenger.age).join(", ");
+            document.getElementById("passengerGender").textContent = booking.gender.charAt(0).toUpperCase() + booking.gender.slice(1);
+            document.getElementById("passengerPhone").textContent = passengers.map(passenger => passenger.phone).join(", ");
+            const account = await EasyBook.currentUser();
+            document.getElementById("passengerEmail").textContent = account?.email || "-";
+            document.getElementById("selectedSeats").textContent = booking.seats.join(", ");
+            document.getElementById("boardingPoint").textContent = booking.boardingPoint || "-";
+            document.getElementById("dropPoint").textContent = booking.dropPoint || "-";
+            document.getElementById("totalFare").textContent = `${booking.total}`;
+            document.getElementById("bookingDate").textContent = new Date(booking.bookingDate).toLocaleString();
+            setTimeout(function(){ window.print(); }, 700);
+        } catch (error) {
+            alert(error.message);
+            location.href = "home.html";
+        }
+    }
+    loadTicket();
+</script>
+
+</body>
+</html>

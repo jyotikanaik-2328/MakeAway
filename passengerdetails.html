@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MakeAway | Passenger Details</title>
+    <style>
+        *{box-sizing:border-box;font-family:Arial,sans-serif}
+        body{margin:0;padding:20px;background:#f8f4ff;color:#2b2240}
+        main{max-width:760px;margin:30px auto}
+        h1{font-size:24px;color:#4b2e83;margin:18px 0}
+        .back-link{color:#7c4dff;text-decoration:none;font-weight:bold}
+        .booking-summary,.passenger-card{background:#fff;border:1px solid #eadcff;border-radius:8px;padding:20px;margin:16px 0;box-shadow:0 4px 12px rgba(124,77,255,.08)}
+        .booking-summary h2,.passenger-card h2{font-size:18px;color:#4b2e83;margin:0 0 14px}
+        .passenger-form{display:grid;grid-template-columns:2fr 1fr;border-top:1px solid #eadcff;padding-top:16px;margin-top:16px;gap:16px}
+        .passenger-form:first-child{border-top:0;padding-top:0;margin-top:0}
+        .passenger-form h3{grid-column:1 / -1;font-size:16px;color:#4b2e83;margin:0 0 14px}
+        .booking-summary p{margin:8px 0;color:#62507d}
+        .booking-summary .stop-summary{margin-top:14px;padding:12px 14px;border:1px solid #ded2f5;border-radius:8px;background:#faf8ff;color:#4b2e83;font-size:14px;font-weight:bold}
+        .booking-summary strong{color:#2b2240}
+        form{display:grid;grid-template-columns:2fr 1fr;gap:16px}
+        label{display:grid;gap:7px;color:#4b2e83;font-weight:bold;font-size:14px}
+        input{width:100%;height:44px;padding:0 12px;border:1px solid #cfc6df;border-radius:5px;font-size:16px;color:#2b2240;background:#fff}
+        input:focus{outline:2px solid #b7a8db;border-color:#7c4dff}
+        .full-width{grid-column:1 / -1}
+        button{width:100%;padding:14px;border:0;border-radius:6px;background:#7c4dff;color:#fff;font-size:16px;font-weight:bold;cursor:pointer}
+        button:hover{background:#6730ff}
+        button:disabled{background:#b7a8db;cursor:wait}
+        #formError{min-height:20px;margin:0;color:#4b2e83}
+        @media(max-width:560px){main{margin:12px auto}form,.passenger-form{grid-template-columns:1fr} .full-width{grid-column:auto}.passenger-form h3{grid-column:auto}}
+    </style>
+    <script src="language.js" defer></script>
+</head>
+<body>
+<main>
+    <a class="back-link" id="seatBackLink" href="seatselection.html">Back to seat selection</a>
+    <h1>Passenger Details</h1>
+
+    <section class="booking-summary" aria-live="polite">
+        <h2>Your trip</h2>
+        <p id="tripSummary">Loading your selected trip...</p>
+        <p id="fareSummary"></p>
+    </section>
+
+    <section class="passenger-card">
+        <h2>Passenger information</h2>
+        <form id="passengerForm">
+            <div id="passengerForms" class="full-width"></div>
+            <p id="formError" class="full-width" role="status"></p>
+            <button class="full-width" type="submit">Continue to Payment</button>
+        </form>
+    </section>
+</main>
+
+<script src="api.js"></script>
+<script>
+const tripSummary = document.getElementById("tripSummary");
+const fareSummary = document.getElementById("fareSummary");
+const form = document.getElementById("passengerForm");
+const passengerForms = document.getElementById("passengerForms");
+const formError = document.getElementById("formError");
+const submitButton = form.querySelector("button[type='submit']");
+function restrictNumericInput(input, maxLength) {
+    input.addEventListener("keydown", event => {
+        if (event.key.length === 1 && !/\d/.test(event.key) && !event.ctrlKey && !event.metaKey && !event.altKey) {
+            event.preventDefault();
+        }
+    });
+    input.addEventListener("input", () => {
+        input.value = input.value.replace(/\D/g, "").slice(0, maxLength);
+    });
+}
+
+function createPassengerField(card, index, field, labelText, type) {
+    const label = document.createElement("label");
+    label.textContent = labelText;
+    const input = document.createElement("input");
+    input.id = `passenger-${index}-${field}`;
+    input.dataset.passengerField = field;
+    input.autocomplete = field === "name" ? "name" : field === "phone" ? "tel" : "off";
+    input.required = true;
+    input.maxLength = field === "name" ? 100 : field === "phone" ? 10 : 3;
+    input.type = type;
+    if (field === "age") {
+        input.min = "1";
+        input.max = "100";
+        restrictNumericInput(input, 3);
+    }
+    if (field === "phone") {
+        input.inputMode = "numeric";
+        input.pattern = "[0-9]{10}";
+        input.placeholder = "Enter 10 digits";
+        input.title = "Enter exactly 10 digits";
+        restrictNumericInput(input, 10);
+    }
+    label.appendChild(input);
+    card.appendChild(label);
+}
+
+function renderPassengerForms() {
+    passengerForms.replaceChildren();
+    selection.seats.forEach((seat, index) => {
+        const card = document.createElement("section");
+        card.className = "passenger-form full-width";
+        const heading = document.createElement("h3");
+        heading.textContent = selection.seats.length === 1
+            ? `Seat ${seat}`
+            : `Passenger ${index + 1} - Seat ${seat}`;
+        card.appendChild(heading);
+        createPassengerField(card, index, "name", "Full name", "text");
+        createPassengerField(card, index, "age", "Age", "number");
+        createPassengerField(card, index, "phone", "Mobile number", "tel");
+        passengerForms.appendChild(card);
+    });
+}
+let selection = null;
+let bus = null;
+
+try {
+    selection = JSON.parse(sessionStorage.getItem("easybookSelection") || "null");
+} catch {
+    selection = null;
+}
+
+async function loadSelection() {
+    if (!EasyBook.requireLogin()) return;
+    if (!selection || !selection.busId || !selection.journeyDate || !Array.isArray(selection.seats) || selection.seats.length === 0) {
+        formError.textContent = "Select your seats before entering passenger details.";
+        submitButton.disabled = true;
+        return;
+    }
+    document.getElementById("seatBackLink").href = `seatselection.html?bus_id=${encodeURIComponent(selection.busId)}&journey_date=${encodeURIComponent(selection.journeyDate)}`;
+
+    try {
+        const result = await EasyBook.request(`/seats?busId=${encodeURIComponent(selection.busId)}&date=${encodeURIComponent(selection.journeyDate)}`);
+        bus = result.bus;
+        const selectedSeats = result.seats.filter(seat => selection.seats.includes(seat.number));
+        if (selectedSeats.length !== selection.seats.length || selectedSeats.some(seat => seat.booked)) {
+            throw new Error("A selected seat is no longer available. Go back and choose another seat.");
+        }
+        tripSummary.textContent = `${bus.name}: ${bus.source} to ${bus.destination} on ${selection.journeyDate} · ${bus.departure}`;
+        const selectedFare = selectedSeats.reduce((total, seat) => total + seat.fare, 0);
+        fareSummary.textContent = `Seats ${selection.seats.join(", ")} · Fare ₹${selectedFare}`;
+        const stopsSummary = document.createElement("p");
+        stopsSummary.className = "stop-summary";
+        stopsSummary.textContent = `Boarding: ${selection.boardingPoint || "Not selected"} · Drop: ${selection.dropPoint || "Not selected"}`;
+        document.querySelector(".booking-summary").appendChild(stopsSummary);
+        renderPassengerForms();
+    } catch (error) {
+        formError.textContent = error.message;
+        submitButton.disabled = true;
+    }
+}
+
+form.addEventListener("submit", async event => {
+    event.preventDefault();
+    if (!form.reportValidity() || !selection || !bus) return;
+    submitButton.disabled = true;
+    formError.textContent = "";
+    const passengers = Array.from(passengerForms.querySelectorAll(".passenger-form")).map(card => ({
+        name: card.querySelector('[data-passenger-field="name"]').value.trim(),
+        age: Number(card.querySelector('[data-passenger-field="age"]').value),
+        phone: card.querySelector('[data-passenger-field="phone"]').value.trim()
+    }));
+    try {
+        const result = await EasyBook.request("/bookings", {
+            method: "POST",
+            body: JSON.stringify({
+                busId: selection.busId,
+                journeyDate: selection.journeyDate,
+                seats: selection.seats,
+                gender: selection.gender,
+                boardingPoint: selection.boardingPoint,
+                dropPoint: selection.dropPoint,
+                passengers
+            })
+        });
+        sessionStorage.removeItem("easybookSelection");
+        location.href = `payment.html?booking_id=${encodeURIComponent(result.booking.id)}`;
+    } catch (error) {
+        formError.textContent = error.message;
+        submitButton.disabled = false;
+    }
+});
+
+loadSelection();
+</script>
+</body>
+</html>

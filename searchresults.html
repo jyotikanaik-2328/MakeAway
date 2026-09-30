@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Results</title>
+
+    <style>
+        *{
+            margin:0;
+            padding:0;
+            box-sizing:border-box;
+            font-family:Arial, sans-serif;
+        }
+
+        body{
+            background:#f8f4ff;
+            color:#2b2240;
+        }
+
+        .navbar{
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            padding:16px 50px;
+            background:#d9c2ff;
+            border-bottom:3px solid #c7a8ff;
+        }
+
+        .logo{
+            font-size:30px;
+            font-weight:bold;
+            color:#4b2e83;
+        }
+
+        .navbar a{
+            text-decoration:none;
+            color:#4b2e83;
+            font-weight:bold;
+            margin-left:15px;
+        }
+
+        .container{
+            width:90%;
+            max-width:1100px;
+            margin:40px auto;
+        }
+
+        h2{
+            color:#4b2e83;
+            margin-bottom:20px;
+        }
+
+        .route-info{
+            background:#efe3ff;
+            border:1px solid #d9c2ff;
+            border-left:4px solid #7c4dff;
+            padding:14px 18px;
+            border-radius:8px;
+            margin-bottom:22px;
+            color:#4b2e83;
+            font-weight:bold;
+        }
+
+        .result-card{
+            background:white;
+            border:1px solid #eadcff;
+            border-radius:8px;
+            padding:20px 22px;
+            margin-bottom:18px;
+            box-shadow:0 6px 18px rgba(124,77,255,0.08);
+            display:grid;
+            grid-template-columns:minmax(0,1fr) 150px;
+            align-items:center;
+            gap:18px;
+        }
+
+        .bus-operator{
+            color:#4b2e83;
+            font-size:17px;
+            font-weight:bold;
+            margin-bottom:4px;
+        }
+
+        .bus-name,.bus-type,.route-line,.seats-left{
+            color:#62507d;
+            font-size:14px;
+            margin-bottom:8px;
+        }
+
+        .trip-times{
+            display:grid;
+            grid-template-columns:minmax(85px,1fr) minmax(95px,1fr) minmax(85px,1fr);
+            align-items:center;
+            gap:12px;
+            margin:18px 0 10px;
+        }
+
+        .trip-time strong{
+            display:block;
+            color:#2b2240;
+            font-size:21px;
+        }
+
+        .trip-time span,.journey-duration{
+            color:#62507d;
+            font-size:12px;
+        }
+
+        .arrival-day{
+            display:block;
+            color:#7c4dff !important;
+            font-weight:bold;
+        }
+
+        .journey-duration{
+            text-align:center;
+            border-top:1px solid #d9c2ff;
+            padding-top:5px;
+        }
+
+        .arrival-time{
+            text-align:right;
+        }
+
+        .card-bottom{
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            gap:12px;
+        }
+
+        .seats-left{
+            color:#a45b16;
+            margin:0;
+        }
+
+        .price-panel{
+            text-align:right;
+        }
+
+        .fare-label,.onwards{
+            display:block;
+            color:#777777;
+            font-size:12px;
+        }
+
+        .fare-price{
+            display:block;
+            color:#222222;
+            font-size:23px;
+            margin:3px 0;
+        }
+
+        .book-btn{
+            background:#7c4dff;
+            color:white;
+            border:none;
+            padding:10px 18px;
+            border-radius:6px;
+            text-decoration:none;
+            font-weight:bold;
+            display:inline-block;
+            margin-top:12px;
+        }
+
+        .book-btn:hover{
+            background:#6936ff;
+        }
+
+        .back-link{
+            display:inline-block;
+            margin-bottom:20px;
+            color:#7c4dff;
+            text-decoration:none;
+            font-weight:bold;
+        }
+
+        .back-link:hover{
+            text-decoration:underline;
+        }
+
+        .no-results{
+            background:white;
+            padding:20px;
+            border-radius:8px;
+            border:1px solid #eadcff;
+            box-shadow:0 6px 18px rgba(124,77,255,0.08);
+            color:#62507d;
+        }
+
+        @media(max-width:700px){
+            .navbar{
+                flex-direction:column;
+                gap:10px;
+                padding:15px 20px;
+            }
+
+            .result-card{
+                grid-template-columns:minmax(0,1fr) 120px;
+                gap:12px;
+                padding:16px;
+            }
+
+            .trip-times{
+                grid-template-columns:minmax(65px,1fr) minmax(65px,1fr) minmax(65px,1fr);
+                gap:8px;
+            }
+
+            .trip-time strong{
+                font-size:18px;
+            }
+
+            .price-panel{
+                align-self:center;
+            }
+
+            .book-btn{
+                padding:9px 12px;
+            }
+        }
+
+        @media(max-width:480px){
+            .container{
+                width:100%;
+                margin:24px auto;
+            }
+
+            .result-card{
+                grid-template-columns:minmax(0,1fr);
+            }
+
+            .price-panel{
+                display:flex;
+                justify-content:space-between;
+                align-items:center;
+                text-align:left;
+                border-top:1px solid #eeeeee;
+                padding-top:12px;
+            }
+
+            .price-panel .book-btn{
+                margin-top:0;
+            }
+        }
+    </style>
+    <script src="language.js" defer></script>
+</head>
+<body>
+
+    <div class="navbar">
+        <div class="logo">Bus Booking System</div>
+        <div>
+            <a href="home.html">Home</a>
+            <a href="mybookings.html">My Bookings</a>
+        </div>
+    </div>
+
+    <div class="container">
+        <a href="home.html" class="back-link">← Back to Search</a>
+        <h2>Available Buses</h2>
+        <div id="routeInfo" class="route-info"></div>
+        <div id="resultsContainer"></div>
+    </div>
+
+<script src="api.js"></script>
+<script>
+        const params = new URLSearchParams(window.location.search);
+        const selectedSource = params.get("source");
+        const selectedDestination = params.get("destination");
+        const journeyDate = params.get("journey_date");
+
+        const routeInfo = document.getElementById("routeInfo");
+        const resultsContainer = document.getElementById("resultsContainer");
+
+        routeInfo.textContent = `Buses from ${selectedSource || "?"} to ${selectedDestination || "?"} on ${journeyDate || "?"}`;
+
+        function formatDuration(minutes) {
+            return `${Math.floor(minutes / 60)}h ${minutes % 60}m`;
+        }
+
+        function renderBuses(buses) {
+            resultsContainer.replaceChildren();
+            if (!buses.length) {
+                const empty = document.createElement("div");
+                empty.className = "no-results";
+                empty.textContent = "No buses found for this route and date.";
+                resultsContainer.appendChild(empty);
+                return;
+            }
+            buses.forEach(bus => {
+                const card = document.createElement("div");
+                card.className = "result-card";
+                const details = document.createElement("div");
+                const operator = document.createElement("p");
+                operator.className = "bus-operator";
+                operator.textContent = bus.operator || bus.name;
+                const name = document.createElement("p");
+                name.className = "bus-name";
+                name.textContent = bus.name;
+                const type = document.createElement("p");
+                type.className = "bus-type";
+                type.textContent = bus.busType || "Intercity bus service";
+                const routeDistance = document.createElement("p");
+                routeDistance.className = "route-line";
+                routeDistance.textContent = `Approx. ${bus.distanceKm} km · Overnight journey`;
+                details.append(operator, name, type, routeDistance);
+
+                const times = document.createElement("div");
+                times.className = "trip-times";
+                const departure = document.createElement("div");
+                departure.className = "trip-time";
+                const departureValue = document.createElement("strong");
+                departureValue.textContent = bus.departure;
+                const departureCity = document.createElement("span");
+                departureCity.textContent = bus.source;
+                departure.append(departureValue, departureCity);
+                const duration = document.createElement("div");
+                duration.className = "journey-duration";
+                duration.textContent = formatDuration(bus.durationMinutes);
+                const arrival = document.createElement("div");
+                arrival.className = "trip-time arrival-time";
+                const arrivalValue = document.createElement("strong");
+                arrivalValue.textContent = bus.arrival;
+                const arrivalCity = document.createElement("span");
+                arrivalCity.textContent = bus.destination;
+                arrival.append(arrivalValue, arrivalCity);
+                if (bus.arrivalDayOffset > 0) {
+                    const arrivalDay = document.createElement("span");
+                    arrivalDay.className = "arrival-day";
+                    arrivalDay.textContent = bus.arrivalDayOffset === 1 ? "Next day" : `In ${bus.arrivalDayOffset} days`;
+                    arrival.appendChild(arrivalDay);
+                }
+                times.append(departure, duration, arrival);
+
+                const bottom = document.createElement("div");
+                bottom.className = "card-bottom";
+                const seats = document.createElement("p");
+                seats.className = "seats-left";
+                seats.textContent = `${bus.seatsAvailable} seats available`;
+                bottom.appendChild(seats);
+                details.append(times, bottom);
+
+                const pricePanel = document.createElement("div");
+                pricePanel.className = "price-panel";
+                const fareLabel = document.createElement("span");
+                fareLabel.className = "fare-label";
+                fareLabel.textContent = "Starting from";
+                const farePrice = document.createElement("strong");
+                farePrice.className = "fare-price";
+                farePrice.textContent = `₹${bus.fare}`;
+                const onwards = document.createElement("span");
+                onwards.className = "onwards";
+                onwards.textContent = "Onwards";
+                const link = document.createElement("a");
+                link.className = "book-btn";
+                link.textContent = "View Seats";
+                link.href = `seatselection.html?bus_id=${encodeURIComponent(bus.id)}&journey_date=${encodeURIComponent(journeyDate)}`;
+                pricePanel.append(fareLabel, farePrice, onwards, link);
+                card.append(details, pricePanel);
+                resultsContainer.appendChild(card);
+            });
+        }
+
+        EasyBook.request(`/buses?source=${encodeURIComponent(selectedSource || "")}&destination=${encodeURIComponent(selectedDestination || "")}&date=${encodeURIComponent(journeyDate || "")}`)
+            .then(result => {
+                renderBuses(result.buses);
+                if (result.festival) {
+                    routeInfo.textContent += ` · ${result.festival.name} festival fares (+${result.festival.surchargePercent}%)`;
+                }
+            })
+            .catch(error => { resultsContainer.textContent = error.message; });
+    </script>
+
+</body>
+</html>

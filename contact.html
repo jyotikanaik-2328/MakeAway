@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+content="width=device-width, initial-scale=1.0">
+
+<title>MakeAway | Contact Us</title>
+
+<link rel="preconnect"
+href="https://fonts.googleapis.com">
+
+<link rel="preconnect"
+href="https://fonts.gstatic.com"
+crossorigin>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+rel="stylesheet">
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Poppins',sans-serif;
+}
+
+body{
+    background:#f8f4ff;
+    color:#333;
+}
+
+/* ================= NAVBAR ================= */
+
+.navbar{
+    background:#7c4dff;
+    color:white;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:18px 60px;
+}
+
+.logo{
+    font-size:28px;
+    font-weight:700;
+}
+
+.nav-links a{
+    color:white;
+    text-decoration:none;
+    margin-left:25px;
+    font-weight:500;
+    transition:.3s;
+}
+
+.nav-links a:hover{
+    color:#e8dcff;
+}
+
+/* ================= HERO ================= */
+
+.hero{
+    background:linear-gradient(135deg,#7c4dff,#9b7cff);
+    color:white;
+    text-align:center;
+    padding:70px 20px;
+}
+
+.hero h1{
+    font-size:42px;
+    margin-bottom:15px;
+}
+.hero p{
+    font-size:18px;
+}
+
+/* ================= CONTAINER ================= */
+
+.container{
+    width:90%;
+    max-width:1200px;
+    margin:60px auto;
+}
+
+/* ================= GRID ================= */
+
+.contact-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:40px;
+    align-items:start;
+}
+
+/* ================= LEFT ================= */
+
+.contact-info h2{
+    color:#7c4dff;
+    margin-bottom:20px;
+}
+
+.contact-info>p{
+    margin-bottom:30px;
+    line-height:1.8;
+}
+
+.info-card{
+    background:white;
+    padding:20px;
+    border-radius:12px;
+    margin-bottom:20px;
+    border-left:5px solid #7c4dff;
+    box-shadow:0 5px 15px rgba(0,0,0,.08);
+}
+
+.info-card h3{
+    color:#7c4dff;
+    margin-bottom:10px;
+}
+
+.info-card p{
+    line-height:1.7;
+    color:#555;
+}
+
+.info-card a{
+    color:#6730ff;
+    text-decoration:none;
+}
+
+.info-card a:hover{
+    text-decoration:underline;
+}
+
+/* ================= RIGHT ================= */
+
+.contact-form{
+    background:white;
+    padding:35px;
+    border-radius:15px;
+    box-shadow:0 5px 15px rgba(0,0,0,.08);
+}
+
+.contact-form h2{
+    color:#7c4dff;
+    margin-bottom:25px;
+}
+
+.contact-form label{
+    display:block;
+    margin-top:18px;
+    margin-bottom:8px;
+    font-weight:600;
+}
+
+.contact-form input,
+.contact-form textarea{
+    width:100%;
+    padding:14px;
+    border:2px solid #ddd;
+    border-radius:8px;
+    outline:none;
+    font-size:15px;
+    transition:.3s;
+}
+
+.contact-form input:focus,
+
+.contact-form textarea:focus{
+    border-color:#7c4dff;
+}
+
+.contact-form textarea{
+    resize:none;
+}
+
+.contact-status{
+    margin-top:14px;
+    line-height:1.5;
+}
+
+.contact-status.success{
+    color:#237a45;
+}
+
+.contact-status.error{
+    color:#b42318;
+}
+
+.contact-actions{
+    display:flex;
+    flex-wrap:wrap;
+    gap:10px;
+    margin-top:12px;
+}
+
+.contact-actions a{
+    color:#6730ff;
+    font-weight:600;
+}
+
+.contact-form button{
+    width:100%;
+    margin-top:25px;
+    padding:15px;
+    background:#7c4dff;
+    color:white;
+    border:none;
+    border-radius:8px;
+    font-size:17px;
+    font-weight:600;
+    cursor:pointer;
+    transition:.3s;
+}
+
+.contact-form button:hover{
+    background:#6730ff;
+}
+
+/* ================= BACK BUTTON ================= */
+
+.back-home{
+    text-align:center;
+    margin:50px 0;
+}
+
+.back-btn{
+    display:inline-block;
+    padding:14px 35px;
+    background:#7c4dff;
+    color:white;
+    text-decoration:none;
+    border-radius:8px;
+    font-weight:600;
+    transition:.3s;
+}
+
+.back-btn:hover{
+    background:#6730ff;
+}
+
+/* ================= RESPONSIVE ================= */
+
+@media(max-width:900px){
+
+.contact-grid{
+grid-template-columns:1fr;
+}
+}
+
+@media(max-width:768px){
+
+.navbar{
+flex-direction:column;
+gap:15px;
+padding:20px;
+}
+
+.hero h1{
+font-size:32px;
+}
+
+.hero p{
+font-size:16px;
+}
+
+.container{
+width:95%;
+}
+}
+</style>
+    <script src="language.js" defer></script>
+</head>
+<body>
+
+<!-- ================= NAVBAR ================= -->
+
+<div class="navbar">
+    <div class="logo">
+        MakeAway
+    </div>
+    <div class="nav-links">
+        <a href="home.html">Home</a>
+        <a href="about.html">About Us</a>
+        <a href="contact.html">Contact Us</a>
+    </div>
+</div>
+
+<!-- ================= HERO ================= -->
+
+<div class="hero">
+    <h1>Contact Us</h1>
+    <p>
+        We'd love to hear from you.
+        Reach out to us for any questions,
+        suggestions or booking assistance.
+    </p>
+</div>
+
+<!-- ================= MAIN CONTAINER ================= -->
+<div class="container">
+    <div class="contact-grid">
+
+        <!-- LEFT SIDE -->
+        <div class="contact-info">
+            <h2>Get In Touch</h2>
+            <p>
+                We'd love to hear from you.
+                Whether you have a question about
+                bookings, payments or our services,
+                our team is always ready to help.
+            </p>
+            <div class="info-card">
+                <h3>Office Address</h3>
+                <p>
+                    MakeAway<br>
+                    Neeladhri, Electronic City<br>
+                    Bengaluru, Karnataka<br>
+                    India - 580031
+                </p>
+            </div>
+            <div class="info-card">
+                <h3>Phone No.s</h3>
+                <p>
+                    <a href="tel:+916362589209">+91 6362589209</a>
+                </p>
+                <p>
+                    <a href="tel:+919353308591">+91 9353308591</a>
+                </p>
+            </div>
+            <div class="info-card">
+                <h3>Email</h3>
+                <p>
+                    <a href="mailto:support.moveaway@gmail.com">support.moveaway@gmail.com</a>
+                </p>
+            </div>
+            <div class="info-card">
+                <h3>Working Hours</h3>
+                <p>
+                    Monday - Saturday<br>
+                    9:00 AM - 7:00 PM
+                </p>
+            </div>
+
+            <div class="info-card">
+
+                <h3>Follow Us</h3>
+                <p>
+                    Instagram<br>
+                    WhatsApp Community<br>
+                </p>
+            </div>
+        </div>
+
+        <!-- RIGHT SIDE -->
+        <div class="contact-form">
+            <h2>Send Us a Message</h2>
+            <form id="contactForm">
+                <label for="contactName">Full Name</label>
+                <input
+                id="contactName"
+                name="name"
+                type="text"
+                placeholder="Enter your full name"
+                required>
+                <label for="contactEmail">Email Address</label>
+                <input
+                id="contactEmail"
+                name="email"
+                type="email"
+                placeholder="Enter your email"
+                required>
+                <label for="contactSubject">Subject</label>
+                <input
+                id="contactSubject"
+                name="subject"
+                type="text"
+                placeholder="Enter subject"
+                required>
+                <label for="contactMessage">Message</label>
+                <textarea
+                id="contactMessage"
+                name="message"
+                rows="7"
+                placeholder="Write your message here..."
+                required></textarea>
+                <button type="submit">
+                    Send Message
+                </button>
+                <p id="contactStatus" class="contact-status" role="status" aria-live="polite"></p>
+                <div id="contactActions" class="contact-actions" hidden>
+                    <a id="emailAdminLink">Open email</a>
+                    <a id="whatsappAdminLink">Open WhatsApp admin 1</a>
+                    <a id="whatsappAdminLink2">Open WhatsApp admin 2</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- ================= BACK BUTTON ================= -->
+
+<div class="back-home">
+    <a href="home.html" class="back-btn">
+    Back to Home
+    </a>
+</div>
+<script>
+document.getElementById("contactForm").addEventListener("submit", async function(e){
+    e.preventDefault();
+    const form = this;
+    const status = document.getElementById("contactStatus");
+    const button = form.querySelector("button[type='submit']");
+    const actions = document.getElementById("contactActions");
+    const message = Object.fromEntries(new FormData(form));
+    button.disabled = true;
+    actions.hidden = true;
+    status.className = "contact-status";
+    status.textContent = "Saving your message...";
+
+    try {
+        const response = await fetch("/api/contact", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(message)
+        });
+        const result = await response.json();
+        if (!response.ok) throw new Error(result.error || "Your message could not be submitted.");
+        const messageBody = `Name: ${message.name}\nEmail: ${message.email}\nSubject: ${message.subject}\n\n${message.message}`;
+        const emailQuery = new URLSearchParams({ subject: message.subject, body: messageBody });
+        emailQuery.set("to", "support.moveaway@gmail.com");
+        document.getElementById("emailAdminLink").href = `https://mail.google.com/mail/?view=cm&fs=1&${emailQuery}`;
+        const whatsappUrl = `https://wa.me/916362589209?text=${encodeURIComponent(messageBody)}`;
+        const whatsappUrl2 = `https://wa.me/919353308591?text=${encodeURIComponent(messageBody)}`;
+        document.getElementById("whatsappAdminLink").href = whatsappUrl;
+        document.getElementById("whatsappAdminLink2").href = whatsappUrl2;
+        status.classList.add("success");
+        status.textContent = "Your message is saved. Choose a contact option below, then send it in your email or WhatsApp app.";
+        actions.hidden = false;
+        form.reset();
+    } catch (error) {
+        status.classList.add("error");
+        status.textContent = error.message || "Your message could not be submitted. Please try again.";
+    } finally {
+        button.disabled = false;
+    }
+});
+</script>
+</body>
+</html>
